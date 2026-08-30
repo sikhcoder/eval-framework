@@ -1,0 +1,58 @@
+[project]
+name = "eval-framework"
+version = "0.1.0"
+description = "Verifiable RL environments for agentic AI — the gym and the grader, not the model."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "ef-core",
+    "ef-sandbox",
+    "ef-runner",
+    "ef-verify",
+    "ef-redteam",
+    "ef-export",
+    "ef-cli",
+]
+
+[project.optional-dependencies]
+demo = ["ef-pack-demo"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.8",
+    "pyright>=1.1.390",
+]
+
+[tool.uv.workspace]
+members = ["packages/*", "packs/*"]
+
+[tool.uv.sources]
+ef-core = { workspace = true }
+ef-sandbox = { workspace = true }
+ef-runner = { workspace = true }
+ef-verify = { workspace = true }
+ef-redteam = { workspace = true }
+ef-export = { workspace = true }
+ef-cli = { workspace = true }
+ef-pack-demo = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pyright]
+include = ["packages", "packs", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "packages", "packs"]
+asyncio_mode = "auto"

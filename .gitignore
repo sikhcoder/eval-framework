@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.pyright/
+uv.lock.bak
+
+# Run artifacts and analysis output
+runs/
+*.parquet
+*.duckdb
+
+# NEVER commit: ground truth, holdout material, unreviewed corpora
+holdout/
+redteam-results/
+references/QUARANTINE/
+*.groundtruth.json
+
+.DS_Store
+.env

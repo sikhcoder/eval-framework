@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync
+        run: uv sync --extra demo
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Type check
+        run: uv run pyright
+
+      - name: Test
+        run: uv run pytest -q
+
+      # The ship gate. Runs against LocalSandbox so no Docker daemon is needed here;
+      # release gating re-runs this against the real backend, where isolation
+      # differences change what a policy can reach.
+      - name: Gameability gate (demo pack)
+        run: uv run ef redteam demo/ledger-balance --seeds 1,2,3 --sandbox local

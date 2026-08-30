@@ -95,7 +95,14 @@ class DockerSandbox:
 
     async def list_files(self, path: str = ".") -> list[str]:
         _, out = await self.exec(f"find {shlex.quote(path)} -type f")
-        return sorted(line.strip() for line in out.splitlines() if line.strip())
+        # `find .` emits "./name"; LocalSandbox emits "name". Verifiers look files up by
+        # name, so an unnormalized prefix here makes every lookup miss silently — the whole
+        # rollout scores zero and looks like a defeated agent rather than a broken harness.
+        return sorted(
+            stripped.removeprefix("./")
+            for line in out.splitlines()
+            if (stripped := line.strip())
+        )
 
     async def stop(self) -> None:
         if self._container is None:

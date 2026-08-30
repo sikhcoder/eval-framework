@@ -56,3 +56,5 @@ venv = ".venv"
 [tool.pytest.ini_options]
 testpaths = ["tests", "packages", "packs"]
 asyncio_mode = "auto"
+# tests/ is not a package; this lets one test module import a helper from another.
+pythonpath = ["tests"]

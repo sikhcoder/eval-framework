@@ -29,6 +29,18 @@ denying, add `no_spurious_denial`. If it rewards patching, add `service_still_wo
 That dimension is not defensive polish. It is the difference between an environment that
 teaches the skill and one that teaches the shortcut.
 
+## Two failure modes M1 actually hit
+
+**Abstaining must not earn credit.** A `no_false_positives`-style dimension gives full marks
+to an agent that reports nothing, because reporting nothing trivially has no false positives.
+Any "did not do the bad thing" dimension must be conditional on having attempted the good
+thing — otherwise the safest strategy is to do nothing, and RL will find that.
+
+**An all-zero red-team report can mean a broken harness, not a sound verifier.** Before
+believing a gate, confirm a genuine solver scores 1.0 **on the same backend**. M1's gate
+passed vacuously for an afternoon because agent output was never reaching the verifier under
+Docker at all.
+
 ## Never
 
 - Read assertions from inside the sandbox. `test-tamper` exists to catch exactly that.

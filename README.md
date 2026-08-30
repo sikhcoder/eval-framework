@@ -107,6 +107,7 @@ it. Deriving truth the other way makes the verifier only as trustworthy as the s
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Interfaces, plug points, data flow |
 | [**VERIFIERS.md**](docs/VERIFIERS.md) | The tier ladder and the ship gate — **start here** |
 | [NICHES.md](docs/NICHES.md) | Domains, ordered by tier |
+| [FLAGSHIPS.md](docs/FLAGSHIPS.md) | The GBA Eval analogues for law and medicine |
 | [GTM.md](docs/GTM.md) | Open-core rationale, pricing posture, risks |
 | [ROADMAP.md](docs/ROADMAP.md) | Milestones and gates |
 | [STATUS.md](docs/STATUS.md) | Living log: progress, decisions, open questions |

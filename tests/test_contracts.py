@@ -159,3 +159,66 @@ def test_reward_score_is_bounded():
         Reward(score=1.5, passed=True)
     with pytest.raises(ValidationError):
         Reward(score=-0.1, passed=False)
+
+
+# --- sandbox backend parity -----------------------------------------------------
+
+
+def _docker_available() -> bool:
+    import shutil
+    import subprocess
+
+    if shutil.which("docker") is None:
+        return False
+    return subprocess.run(["docker", "info"], capture_output=True).returncode == 0
+
+
+requires_docker = pytest.mark.skipif(
+    not _docker_available(), reason="docker daemon not available"
+)
+
+
+@requires_docker
+@pytest.mark.asyncio
+async def test_docker_and_local_agree_on_file_names():
+    """Backends must name files identically, or verifiers silently miss under Docker.
+
+    `find .` emits "./x" while LocalSandbox emits "x". That mismatch made every
+    `trace.final_files[...]` lookup fail under Docker, so rollouts scored zero and the
+    red-team gate passed vacuously — a defeated-looking result from a broken harness.
+    """
+    from ef.sandbox.docker import DockerSandbox
+
+    instance = GEN.generate(3)
+    names = {}
+    for label, sandbox in (("local", LocalSandbox()), ("docker", DockerSandbox())):
+        try:
+            await sandbox.start(instance)
+            await sandbox.write_file("corrections.json", "{}")
+            names[label] = set(await sandbox.list_files())
+        finally:
+            await sandbox.stop()
+
+    assert "corrections.json" in names["local"]
+    assert "corrections.json" in names["docker"], (
+        f"docker returned {sorted(names['docker'])} — path prefix not normalized"
+    )
+    assert names["local"] == names["docker"]
+
+
+@requires_docker
+@pytest.mark.asyncio
+async def test_solver_scores_one_on_docker():
+    """A genuine solution must score 1.0 on the REAL backend, not just locally.
+
+    Without this, an all-zero red-team report is indistinguishable from a harness that
+    never collected any output.
+    """
+    from ef.runner.engine import rollout
+    from ef.sandbox.docker import DockerSandbox
+
+    from test_redteam import Solver
+
+    result = await rollout(GEN, VER, Solver(), seed=4, sandbox=DockerSandbox())
+    assert result.reward.passed, result.reward.evidence
+    assert result.reward.score == 1.0

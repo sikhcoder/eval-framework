@@ -3,7 +3,7 @@
 Living log of progress, decisions, and open questions. **Update this at the end of every
 working session** — it is the handoff artifact between sessions and between people.
 
-Last updated: **2026-08-30**
+Last updated: **2026-08-30** (M1 landed)
 
 ---
 
@@ -15,8 +15,8 @@ Docker, CI green.
 | Milestone | State |
 |---|---|
 | M0 — core, docs, prompts, CI | ✅ Complete |
-| M1 — accounting month-end close | 🔜 Next. Blocked on nothing; expert input improves it |
-| M2 — wave 1 packs (legal ×2, medical ×2, software) | ⏸ Gated on M1's red-team gate holding |
+| M1 — accounting month-end close | ✅ Complete. Passes baseline + 2 domain adversaries on Docker |
+| M2 — wave 1 packs (legal ×2, medical ×2, software) | 🔜 Unblocked — M1's gate holds |
 | M3+ — insurance, security, tier 2 | Not started |
 
 ### What actually works today
@@ -42,6 +42,8 @@ uv run ef export  demo/ledger-balance --fmt inspect
 | 2026-08-29 | Open-core: public Apache-2.0 core + private packs | Core becomes the interchange format; packs are the acquirable asset |
 | 2026-08-29 | Gameability Report as the differentiator | Labs can't currently tell a sound verifier from a gameable one |
 | 2026-08-29 | Legal + medical move **up** into wave 1 | In-house lawyer, MDs, and accountant remove the usual expertise blocker |
+| 2026-08-30 | **Docker/Local backends must agree on file naming** | A `./` prefix from `find .` made every `trace.final_files` lookup miss under Docker. Gates passed *vacuously*. Now covered by a parity test and a solver-scores-1.0-on-Docker test. |
+| 2026-08-30 | **Abstaining earns no precision credit** | `no_false_positives` gave full marks for flagging nothing, so the suspense-plug policy scored 0.27. Precision is now conditional on having found a genuine error. |
 | 2026-08-30 | **Fable 5 for red-team and verifier design; Opus 5 for everything else** | Fable is 2× Opus cost ($10/$50 vs $5/$25) and *more* capable, not cheaper. Worth it where we need frontier-grade adversarial reasoning — a weak adversary won't find the exploits a real training run does. Not worth it for generators and plumbing. |
 
 ### Model note
@@ -92,13 +94,30 @@ Worksheets are in the **private repo** at `worksheets/`. Each fills a real gap:
 
 ---
 
+## What M1 taught us
+
+Two defects the gate caught, both worth carrying into every future pack:
+
+1. **The gate was passing vacuously.** `DockerSandbox.list_files` returned `./name` while
+   `LocalSandbox` returned `name`, so no agent output ever reached a verifier under Docker.
+   Everything scored zero and looked defeated. **An all-zero red-team report is
+   indistinguishable from a broken harness unless a real solver also scores 1.0 on the same
+   backend.** That check is now a test, and it belongs in every pack's definition of done.
+2. **Abstaining was being rewarded.** Reporting nothing earned full `no_false_positives`
+   credit, so the suspense plug scored 0.27. Precision now requires having found something.
+   Generalizes: any "did not do the bad thing" dimension must be conditional on having
+   attempted the good thing.
+
+Both are now baked into `prompts/generate/verifier-author.md` and the packager checklist.
+
 ## Next session
 
 1. Collect worksheets from accounting/legal/medical colleagues (async — doesn't block).
-2. Build M1: `prompts/packs/accounting-month-end-close.md`. Use the env-initializer agent
-   to scaffold and write `PROGRESS.md`, then iterate one feature per session.
-3. Add the accounting-specific red-team policy (suspense-account plug) **before** declaring
-   M1 done — the five baselines won't catch it.
+2. **Fable 5 pass on the M1 verifier and adversaries** — the one place the premium is
+   justified. Specifically: is there a cheat neither the five baselines nor the two
+   accounting policies catch?
+3. Calibrate M1 difficulty — run a real model over ≥20 seeds and check the 20–70% band.
+4. Start M2 wave-1 packs; the gate holds, so this is unblocked.
 
-**Rule that gates everything:** if M1's red-team gate doesn't hold on Docker, M2 does not
-start. Four packs on a broken pattern is four times the rework.
+**Rule that still gates everything:** a pack ships only when the baseline gate, its domain
+adversaries, *and* a real solver at 1.0 all hold on the real backend.

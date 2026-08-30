@@ -16,7 +16,9 @@
 
 - [ ] Red-team passes on the **real** backend, ≥3 seeds (`--sandbox local` is not acceptable
       for release; isolation differences change what a policy can reach)
-- [ ] A real model rollout succeeds — the task must be solvable at all
+- [ ] **A genuine solver scores 1.0 on the real backend.** Non-negotiable: an all-zero
+      red-team report is indistinguishable from a harness that never collected any output
+- [ ] Domain-specific adversaries defeated, not just the five baselines
 - [ ] Difficulty in the useful band
 - [ ] Tier 1+: expert agreement rate measured and published
 - [ ] Provenance clean, lawyer signed off

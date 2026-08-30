@@ -17,7 +17,8 @@ Docker, CI green.
 | M0 — core, docs, prompts, CI | ✅ Complete |
 | M1 — accounting month-end close | ✅ Complete. Passes baseline + 2 domain adversaries on Docker |
 | M2 — wave 1 packs (legal ×2, medical ×2, software) | ✅ Complete. Six tasks ship-ready |
-| M3 — insurance, security | 🔜 Next, or jump to the DRG flagship |
+| M3 — insurance, security | ❌ **Descoped.** More short tasks move us the wrong way — see `HORIZON.md` |
+| Horizon — one long-form task | 🔜 Next build, after calibration and a buyer conversation |
 | Flagship — DRG grouper | Phase 0 kill-test can run any time, ~$100. See `FLAGSHIP-DRG.md` |
 
 ### Six tasks, all gated on real Docker

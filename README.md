@@ -111,6 +111,7 @@ it. Deriving truth the other way makes the verifier only as trustworthy as the s
 | [FLAGSHIP-DRG.md](docs/FLAGSHIP-DRG.md) | Execution plan for the DRG grouper flagship |
 | [GTM.md](docs/GTM.md) | Open-core rationale, pricing posture, risks |
 | [ROADMAP.md](docs/ROADMAP.md) | Milestones and gates |
+| [HORIZON.md](docs/HORIZON.md) | The gap between what we built and what labs buy |
 | [STATUS.md](docs/STATUS.md) | Living log: progress, decisions, open questions |
 
 Working prompts for building with Claude Code live in [`prompts/`](prompts/).

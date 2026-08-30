@@ -22,6 +22,13 @@ model. Fix the verifier. Never raise the threshold.
 
 Read `docs/VERIFIERS.md` before writing or changing any verifier.
 
+## Status and open questions
+
+`docs/STATUS.md` is the living log — progress, decisions with rationale, and open questions.
+**Update it at the end of every working session.** It is the handoff between sessions and
+between people, and it is where a question you couldn't answer should go rather than being
+guessed at.
+
 ## Layout
 
 - `packages/ef-{core,sandbox,verify,runner,redteam,export,cli}` — the Apache-2.0 core
@@ -29,8 +36,21 @@ Read `docs/VERIFIERS.md` before writing or changing any verifier.
 - `docs/` — STRATEGY, ARCHITECTURE, VERIFIERS, NICHES, GTM, ROADMAP
 - `prompts/{build,packs,expert,generate}` — working prompts
 
+Fillable worksheets for our accounting, legal, and medical colleagues live in the **private**
+repo at `worksheets/` — deliberately not here, so a filled worksheet containing proprietary
+rule encodings can never be PR'd to a public repo by accident.
+
 Domain packs live in the **private** `eval-framework-packs` repo and register through the
 `ef.packs` entry point group.
+
+## Models
+
+Use **Fable 5** (`claude-fable-5`) for red-team policy authoring and verifier design — we
+sell finding the gaps where frontier models cheat, and a weaker adversary won't find what a
+real training run does. Use **Opus 5** (`claude-opus-5`) for generators, plumbing, and
+scaffolding; Fable costs 2× ($10/$50 vs $5/$25) and buys nothing there.
+
+Fable requires 30-day data retention and is unavailable under ZDR.
 
 ## Commands
 

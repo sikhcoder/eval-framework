@@ -109,6 +109,7 @@ it. Deriving truth the other way makes the verifier only as trustworthy as the s
 | [NICHES.md](docs/NICHES.md) | Domains, ordered by tier |
 | [GTM.md](docs/GTM.md) | Open-core rationale, pricing posture, risks |
 | [ROADMAP.md](docs/ROADMAP.md) | Milestones and gates |
+| [STATUS.md](docs/STATUS.md) | Living log: progress, decisions, open questions |
 
 Working prompts for building with Claude Code live in [`prompts/`](prompts/).
 

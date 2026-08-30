@@ -18,7 +18,7 @@ Docker, CI green.
 | M1 — accounting month-end close | ✅ Complete. Passes baseline + 2 domain adversaries on Docker |
 | M2 — wave 1 packs (legal ×2, medical ×2, software) | ✅ Complete. Six tasks ship-ready |
 | M3 — insurance, security | ❌ **Descoped.** More short tasks move us the wrong way — see `HORIZON.md` |
-| Horizon — one long-form task | 🔜 Next build, after calibration and a buyer conversation |
+| Horizon — one long-form task | ✅ `accounting/year-close`. 12 linked months, delayed errors, 12 checkpoints |
 | Flagship — DRG grouper | Phase 0 kill-test can run any time, ~$100. See `FLAGSHIP-DRG.md` |
 
 ### Six tasks, all gated on real Docker
@@ -31,6 +31,7 @@ Docker, CI green.
 | `legal/citation-verify` | 1 | 1.000 | pass | flag-all 0.059, flag-none 0.059 |
 | `medical/dosing` | 0 | 1.000 | pass | no-renal 0.263, refuse-all 0.158 |
 | `medical/coding` | 1 | 1.000 | pass | max-reimbursement 0.143, ignore-exclusions 0.143 |
+| `accounting/year-close` | 0 | 1.000 | pass | **isolated-month 0.214** (long-horizon) |
 
 The oracle column is the one that matters: it proves each gate is real rather than an
 artifact of output never reaching the verifier.
@@ -74,6 +75,8 @@ PHI-adjacent work. Revisit before any such commitment.
 
 ### Engineering
 
+- [ ] **Rollout checkpointing** — an 8-hour run that dies at hour 7 loses everything. Blocks
+      running `year-close` against a real model. Framework change, now the top engineering gap.
 - [ ] **Trace store** (`prompts/build/05-trace-store.md`) — not started. Needed before we can
       answer aggregate questions: which dimension fails most, does score correlate with seed.
 - [ ] E2B or Modal backend — do we need one, or is Docker sufficient through M2?

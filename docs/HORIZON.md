@@ -58,7 +58,7 @@ Everything except the tasks:
 
 ## How to add it, per domain
 
-### Accounting — the cheapest, since the generator exists
+### Accounting — ✅ BUILT (`accounting/year-close`)
 
 Not "find 5 errors in one month." **Twelve consecutive months**, where:
 
@@ -68,9 +68,17 @@ Not "find 5 errors in one month." **Twelve consecutive months**, where:
 - Some errors are only *detectable* later, when a subsequent-month document contradicts an
   earlier assumption
 
-That is hours of work, and a mistake in March poisons everything after it. The verifier
-extends naturally: score each month's trial balance, plus whether prior-period adjustments
-were correctly recognized and applied.
+That is hours of work, and a mistake in March poisons everything after it.
+
+**Built and gated.** ~38KB, ~540 ledger rows, four delayed-error patterns. Twelve weighted
+checkpoints plus weightless `month:YYYY-MM` dimensions so the gradient shows where a run
+diverged.
+
+The result that validates the design: the `isolated-month` adversary — which closes each
+month blind to the others — writes all twelve closes, chains continuity perfectly, and still
+scores **0.214 with 0/12 monthly checkpoints**, because a January prepaid error poisons every
+month after it. None of the five baseline policies catch that cheat. Compounding is doing
+exactly what it was built to do.
 
 ### Legal — a whole docket
 
@@ -106,8 +114,8 @@ steps, there are more places for a degenerate strategy to hide.
 1. **Calibrate the six existing tasks first.** If a frontier model already scores 90%+, that
    confirms the horizon diagnosis empirically and is worth knowing before building anything.
 2. **Talk to a buyer** before committing months to a long-form environment.
-3. **Then one long-form task** — the 12-month close, since the generator already exists —
-   or DRG Phase 0.
+3. ~~Then one long-form task~~ — **done**, `accounting/year-close`. Next long-form target is
+   the legal docket or DRG Phase 0.
 
 **Do not build more short tasks in new domains.** M3/M4/M5 as originally scoped would move
 us further in the wrong direction: more of the thing we already have too much of.

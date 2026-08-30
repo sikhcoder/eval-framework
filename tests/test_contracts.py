@@ -216,7 +216,6 @@ async def test_solver_scores_one_on_docker():
     """
     from ef.runner.engine import rollout
     from ef.sandbox.docker import DockerSandbox
-
     from test_redteam import Solver
 
     result = await rollout(GEN, VER, Solver(), seed=4, sandbox=DockerSandbox())

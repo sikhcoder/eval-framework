@@ -3,7 +3,7 @@
 Living log of progress, decisions, and open questions. **Update this at the end of every
 working session** — it is the handoff artifact between sessions and between people.
 
-Last updated: **2026-08-30** (M1 landed)
+Last updated: **2026-08-30** (M2 landed)
 
 ---
 
@@ -16,8 +16,23 @@ Docker, CI green.
 |---|---|
 | M0 — core, docs, prompts, CI | ✅ Complete |
 | M1 — accounting month-end close | ✅ Complete. Passes baseline + 2 domain adversaries on Docker |
-| M2 — wave 1 packs (legal ×2, medical ×2, software) | 🔜 Unblocked — M1's gate holds |
-| M3+ — insurance, security, tier 2 | Not started |
+| M2 — wave 1 packs (legal ×2, medical ×2, software) | ✅ Complete. Six tasks ship-ready |
+| M3 — insurance, security | 🔜 Next, or jump to the DRG flagship |
+| Flagship — DRG grouper | Phase 0 kill-test can run any time, ~$100. See `FLAGSHIP-DRG.md` |
+
+### Six tasks, all gated on real Docker
+
+| Task | Tier | Oracle | Baseline gate | Domain adversaries |
+|---|---|---|---|---|
+| `accounting/month-end-close` | 0 | 1.000 | pass | suspense-plug 0.048, flag-everything 0.143 |
+| `software/replication` | 0 | 1.000 | pass | all three ≤ 0.200 |
+| `legal/docket-deadlines` | 0 | 1.000 | pass | naive-calendar 0.278, no-roll 0.278 |
+| `legal/citation-verify` | 1 | 1.000 | pass | flag-all 0.059, flag-none 0.059 |
+| `medical/dosing` | 0 | 1.000 | pass | no-renal 0.263, refuse-all 0.158 |
+| `medical/coding` | 1 | 1.000 | pass | max-reimbursement 0.143, ignore-exclusions 0.143 |
+
+The oracle column is the one that matters: it proves each gate is real rather than an
+artifact of output never reaching the verifier.
 
 ### What actually works today
 
@@ -75,7 +90,11 @@ PHI-adjacent work. Revisit before any such commitment.
 Worksheets are in the **private repo** at `worksheets/`. Each fills a real gap:
 
 - [ ] **Accounting** — is the injected-error catalogue realistic? Is the suspense-account plug
-      the true cheat? *(gates M1 quality)*
+      the true cheat?
+- [ ] **Legal, deadlines — highest priority.** Is our order of operations right? We compute the
+      base period, roll forward, *then* add the mail extension, then roll again. Reversing
+      those steps changes a meaningful fraction of answers. Everything in that pack rests on
+      this.
 - [ ] **Legal, deadlines** — how often is naive calendar-day counting accidentally correct?
       That number determines how hard we must over-sample edge cases.
 - [ ] **Legal, citations** — is "still good law" decidable from the citation alone, or does it
@@ -93,6 +112,17 @@ Worksheets are in the **private repo** at `worksheets/`. Each fills a real gap:
   their hours convert to verifier code at the highest rate, but this is the real constraint.
 
 ---
+
+## What M2 taught us
+
+**Recall must be an exact set match, not a superset.** `flag-all-citations` scored 0.41
+because flagging every citation earned full recall credit — perfect recall is trivial when
+you accuse everything. This is the mirror image of the M1 abstention bug, and the same latent
+hole existed in the accounting pack. Both are fixed.
+
+The general rule now covering both: **a dimension must not be satisfiable by a degenerate
+extreme.** Flagging nothing must not earn precision; flagging everything must not earn
+recall.
 
 ## What M1 taught us
 
@@ -112,12 +142,15 @@ Both are now baked into `prompts/generate/verifier-author.md` and the packager c
 
 ## Next session
 
-1. Collect worksheets from accounting/legal/medical colleagues (async — doesn't block).
-2. **Fable 5 pass on the M1 verifier and adversaries** — the one place the premium is
-   justified. Specifically: is there a cheat neither the five baselines nor the two
-   accounting policies catch?
-3. Calibrate M1 difficulty — run a real model over ≥20 seeds and check the 20–70% band.
-4. Start M2 wave-1 packs; the gate holds, so this is unblocked.
+1. **Send an email to a lab.** The technical work is now well ahead of the commercial work,
+   and six gated environments plus a published methodology is a real thing to open with. This
+   is the highest-value hour available.
+2. **DRG flagship Phase 0** — ~$100 and two weeks tells us whether the flagship is viable at
+   all. See `FLAGSHIP-DRG.md`.
+3. Collect worksheets, especially the deadline order-of-operations question.
+4. **Fable 5 pass on the six verifiers** — is there a cheat none of our adversaries catch?
+5. Difficulty calibration: real model, ≥20 seeds per task, target the 20–70% band. Right now
+   we know the tasks are *ungameable*; we do not yet know they are *appropriately hard*.
 
 **Rule that still gates everything:** a pack ships only when the baseline gate, its domain
 adversaries, *and* a real solver at 1.0 all hold on the real backend.

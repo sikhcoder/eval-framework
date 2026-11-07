@@ -7,12 +7,14 @@ them, so a new pack inherits real coverage the moment it registers.
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 
 import pytest
 from ef.core.protocols import Sandbox, TaskGenerator, Verifier
 from ef.core.registry import Registry
 from ef.core.types import Reward, TaskInstance, Trace, VerifierTier
 from ef.sandbox.local import LocalSandbox
+from ef.verify import money_equal
 from ef.verify.leak import find_leak
 from ef_pack_demo import PACK, LedgerGenerator, LedgerVerifier
 from pydantic import ValidationError
@@ -108,6 +110,28 @@ def test_partial_credit_is_dimensional():
     reward = VER.verify(instance, trace)
     assert 0.0 < reward.score < 1.0
     assert set(reward.dimensions) == {"submitted", "entries_correct", "totals_correct"}
+
+
+def test_money_equal_rejects_one_cent():
+    """A penny off is a wrong answer, not a rounding tolerance."""
+    assert not money_equal("100.00", "100.01")
+    assert not money_equal(Decimal("5.00"), "4.99")
+    assert money_equal("100.00", "100.00")
+    assert money_equal(0.1 + 0.2, "0.30")
+
+
+def test_totals_one_cent_off_fail():
+    """An almost-balanced ledger is still a wrong ledger."""
+    instance = GEN.generate(11)
+    off_by_a_cent = Decimal(instance.ground_truth.payload["total_debits"]) + Decimal("0.01")
+    payload = dict(instance.ground_truth.payload) | {"total_debits": str(off_by_a_cent)}
+    trace = Trace(
+        instance_id=instance.instance_id, seed=11, agent="penny-off",
+        final_files={"corrections.json": json.dumps(payload)},
+    )
+    reward = VER.verify(instance, trace)
+    assert reward.dimensions["totals_correct"] == 0.0
+    assert not reward.passed
 
 
 def test_leak_guard_detects_canary():

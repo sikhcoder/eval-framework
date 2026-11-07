@@ -17,7 +17,7 @@ PENNY = Decimal("0.01")
 
 def money_equal(actual: Decimal | str | float, expected: Decimal | str | float) -> bool:
     """Exact to the penny. Never use float equality on money."""
-    return (Decimal(str(actual)) - Decimal(str(expected))).copy_abs() <= PENNY
+    return Decimal(str(actual)).quantize(PENNY) == Decimal(str(expected)).quantize(PENNY)
 
 
 def within_tolerance(actual: float, expected: float, tolerance: float) -> bool:

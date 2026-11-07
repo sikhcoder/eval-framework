@@ -62,6 +62,7 @@ uv run ef export  demo/ledger-balance --fmt inspect
 | 2026-08-30 | **Docker/Local backends must agree on file naming** | A `./` prefix from `find .` made every `trace.final_files` lookup miss under Docker. Gates passed *vacuously*. Now covered by a parity test and a solver-scores-1.0-on-Docker test. |
 | 2026-08-30 | **Abstaining earns no precision credit** | `no_false_positives` gave full marks for flagging nothing, so the suspense-plug policy scored 0.27. Precision is now conditional on having found a genuine error. |
 | 2026-08-30 | **Fable 5 for red-team and verifier design; Opus 5 for everything else** | Fable is 2× Opus cost ($10/$50 vs $5/$25) and *more* capable, not cheaper. Worth it where we need frontier-grade adversarial reasoning — a weak adversary won't find the exploits a real training run does. Not worth it for generators and plumbing. |
+| 2026-11-06 | **money_equal is exact to the cent** | It compared `abs(diff) <= 0.01`, so a total one cent off passed `totals_correct`. It now quantizes both sides to the cent and requires equality. Covered by unit and verifier-level regression tests. |
 
 ### Model note
 
